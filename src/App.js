@@ -41,7 +41,6 @@ class App extends Component {
   }
   
   calculateFaceLocations = (data) => {
-    console.log(data);
     const clarifaiface = data.outputs[0].data.regions[0].region_info.bounding_box;
     const image = document.getElementById('inputimage');
     const width = Number(image.width);
@@ -54,19 +53,15 @@ class App extends Component {
     }
   }
 
-  displayFaceBox = (box) => {
-    console.log(box);
-    this.setState({box:box});
-  }
+  displayFaceBox = (box) => this.setState({box:box});
 
-  onInputChange = (evt) => {
-    this.setState({input:evt.target.value});
-  }
+  onInputChange = (evt) => this.setState({input:evt.target.value});
 
   onButtonSubmit = () => {
-    this.setState({imageUrl:this.state.input});
+    const {input} = this.state;
+    this.setState({imageUrl:input});
     app.models
-      .predict(Clarifai.FACE_DETECT_MODEL, this.state.input)
+      .predict(Clarifai.FACE_DETECT_MODEL, input)
       .then(response => this.displayFaceBox(this.calculateFaceLocations(response)))
       .catch(err => console.log(err));
   }
@@ -80,15 +75,17 @@ class App extends Component {
     this.setState({route});
   }
 
+  // Route change functions to be passed to components
   routeChangeHome = () => this.onRouteChange(states.home);
   routeChangeSignin = () => this.onRouteChange(states.signin);
   routeChangeRegister = () => this.onRouteChange(states.register);
 
-
   render() {
       
+    const {route, box, imageUrl, isSignedIn} = this.state;
     let component = null;
-    switch(this.state.route){
+    // determine contents of page based on current state
+    switch(route){
       case states.home:
         component = <div>  
           <Logo />
@@ -97,7 +94,7 @@ class App extends Component {
             onInputChange={this.onInputChange} 
             onButtonSubmit={this.onButtonSubmit}
           />
-          <FaceRecognition box={this.state.box} imageUrl={this.state.imageUrl}/>
+          <FaceRecognition box={box} imageUrl={imageUrl}/>
         </div>;
         break;
       case states.signin:
@@ -116,7 +113,7 @@ class App extends Component {
           onRouteChangeSignout={this.routeChangeSignin} 
           onRouteChangeSignin={this.routeChangeSignin}
           onRouteChangeRegister={this.routeChangeRegister}
-          isSignedIn={this.state.isSignedIn}/>
+          isSignedIn={isSignedIn}/>
         {component}
       </div>
     );

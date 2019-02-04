@@ -26,7 +26,7 @@ const particlesOptions = {
   }
 }
 
-const states = {signin:{}, home:{}, register:{}};
+const states = {signin:["signin"], home:['home'], register:['register'], signout:['signout']};
 
 class App extends Component {
   constructor(){
@@ -36,6 +36,7 @@ class App extends Component {
       imageUrl:'',
       box:{},
       route:states.signin,
+      isSignedIn:false,
     }
   }
   
@@ -71,6 +72,11 @@ class App extends Component {
   }
 
   onRouteChange = (route) =>{
+    if (route === states.signin || route === states.register){
+      this.setState({isSignedIn:false});
+    }else if(route === states.home){
+      this.setState({isSignedIn:true});
+    }
     this.setState({route});
   }
 
@@ -109,7 +115,8 @@ class App extends Component {
         <Navigation 
           onRouteChangeSignout={this.routeChangeSignin} 
           onRouteChangeSignin={this.routeChangeSignin}
-          onRouteChangeRegister={this.routeChangeRegister}/>
+          onRouteChangeRegister={this.routeChangeRegister}
+          isSignedIn={this.state.isSignedIn}/>
         {component}
       </div>
     );

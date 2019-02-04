@@ -3,7 +3,7 @@ import './Navigation.css'
 
 class Navigation extends Component{
     render(){
-        const {onRouteChangeSignout, onRouteChangeSignIn, onRouteChangeRegister, isSignedIn} = this.props;
+        const {onRouteChangeSignout, onRouteChangeSignin, onRouteChangeRegister, isSignedIn} = this.props;
         const component = isSignedIn
                             ?   <nav>
                                     <p onClick={onRouteChangeSignout}
@@ -13,7 +13,7 @@ class Navigation extends Component{
                                 </nav>
                             
                             :    <nav>                        
-                                    <p onClick={onRouteChangeSignIn}
+                                    <p onClick={onRouteChangeSignin}
                                         className='f3 link dim black underline pa3 pointer'>
                                         Sign In
                                     </p>

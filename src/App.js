@@ -37,9 +37,24 @@ class App extends Component {
       box:{},
       route:states.signin,
       isSignedIn:false,
+      user:{
+        id:'',
+        name: '',
+        email: '',
+        entries: 0,
+        joined: '',
+      }
     }
   }
-  
+
+  loadUser = (currentUser) =>{
+    const{id, name, email, entries, joined} = currentUser;
+    this.setState({user:{
+      id, name, email, entries, joined
+    }});
+    console.log("state", this.state);
+  }  
+
   calculateFaceLocations = (data) => {
     const clarifaiface = data.outputs[0].data.regions[0].region_info.bounding_box;
     const image = document.getElementById('inputimage');
@@ -57,12 +72,23 @@ class App extends Component {
 
   onInputChange = (evt) => this.setState({input:evt.target.value});
 
-  onButtonSubmit = () => {
+  onImageSubmit = () => {
     const {input} = this.state;
     this.setState({imageUrl:input});
     app.models
       .predict(Clarifai.FACE_DETECT_MODEL, input)
-      .then(response => this.displayFaceBox(this.calculateFaceLocations(response)))
+      .then(response => {
+        fetch('http://localhost:3001/image', {
+          method: 'put',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({id: this.state.user.id}),
+        })
+        .then(response => response.json())
+        .then(response => {
+            this.setState(Object.assign(this.state.user, {entries: response.entries}));
+        });
+        this.displayFaceBox(this.calculateFaceLocations(response));
+      })
       .catch(err => console.log(err));
   }
 
@@ -89,19 +115,19 @@ class App extends Component {
       case states.home:
         component = <div>  
           <Logo />
-          <Rank />
+          <Rank user={this.state.user}/>
           <ImageLinkForm 
             onInputChange={this.onInputChange} 
-            onButtonSubmit={this.onButtonSubmit}
+            onImageSubmit={this.onImageSubmit}
           />
           <FaceRecognition box={box} imageUrl={imageUrl}/>
         </div>;
         break;
       case states.signin:
-        component = <Signin onRouteChangeSignin={this.routeChangeHome} onRouteChangeRegister={this.routeChangeRegister}/>
+        component = <Signin loadUser={this.loadUser} onRouteChangeSignin={this.routeChangeHome} onRouteChangeRegister={this.routeChangeRegister}/>
         break;
       case states.register:
-        component = <Register onRouteChangeSignin={this.routeChangeHome}/>
+        component = <Register onRouteChangeSignin={this.routeChangeHome} loadUser={this.loadUser}/>
         break;
     }
 

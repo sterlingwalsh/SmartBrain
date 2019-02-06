@@ -3,13 +3,14 @@ import React, {Component} from 'react'
 
 class Rank extends Component{
     render(){
+        const { name, entries} = this.props.user;
         return(
             <div>
                 <div className='white f3'>
-                    {'Current Rank'}
+                    {`${name}, you have submitted ${entries} images. Your current rank is`}
                 </div>
                 <div className='white f1'>
-                    {'#5'}
+                    {'#rank'}
                 </div>
             </div>
         );

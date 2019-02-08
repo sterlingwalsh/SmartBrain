@@ -24,7 +24,6 @@ class Register extends Component{
     }
 
     onSubmitRegister = () => {
-        console.log(this.state);
         fetch('http://localhost:3001/register', {
             method:'post',
             headers: {'Content-Type': 'application/json'},
@@ -36,12 +35,12 @@ class Register extends Component{
         })
         .then(response => response.json())
         .then(user => {
-            if(user){
+            console.log('user', user);
+            if(user.id){
                 this.props.loadUser(user);
-                return this.props.onRouteChangeSignin();
+                return this.props.onRouteChangeHome();
             }
         });
-        
     }
 
     onEnterKey = (evt) => {if(evt.keyCode === 13) this.onSubmitRegister();}

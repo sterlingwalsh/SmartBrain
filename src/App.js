@@ -84,8 +84,8 @@ class App extends Component {
           body: JSON.stringify({id: this.state.user.id}),
         })
         .then(response => response.json())
-        .then(response => {
-            this.setState(Object.assign(this.state.user, {entries: response.entries}));
+        .then(entries => {
+            this.setState(Object.assign(this.state.user, {entries}));
         });
         this.displayFaceBox(this.calculateFaceLocations(response));
       })
@@ -124,10 +124,10 @@ class App extends Component {
         </div>;
         break;
       case states.signin:
-        component = <Signin loadUser={this.loadUser} onRouteChangeSignin={this.routeChangeHome} onRouteChangeRegister={this.routeChangeRegister}/>
+        component = <Signin loadUser={this.loadUser} onRouteChangeHome={this.routeChangeHome} onRouteChangeRegister={this.routeChangeRegister}/>
         break;
       case states.register:
-        component = <Register onRouteChangeSignin={this.routeChangeHome} loadUser={this.loadUser}/>
+        component = <Register onRouteChangeHome={this.routeChangeHome} loadUser={this.loadUser}/>
         break;
     }
 

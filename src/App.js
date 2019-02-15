@@ -38,6 +38,8 @@ const initialState = {
   }
 };
 
+const serverEndpoint = 'https://calm-garden-99508.herokuapp.com';
+
 class App extends Component {
   constructor(){
     super();
@@ -72,7 +74,7 @@ class App extends Component {
   onImageSubmit = () => {
     const {input} = this.state;
     this.setState({imageUrl:input});
-    fetch('http://localhost:3001/imageurl', {
+    fetch(`${serverEndpoint}/imageurl`, {
         method: 'post',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({input: this.state.input}),
@@ -80,7 +82,7 @@ class App extends Component {
       .then(response => response.json())
       .then(response => {
         if (response){
-          fetch('http://localhost:3001/image', {
+          fetch(`${serverEndpoint}/image`, {
             method: 'put',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({id: this.state.user.id}),
@@ -128,10 +130,17 @@ class App extends Component {
         </div>;
         break;
       case states.signin:
-        component = <Signin loadUser={this.loadUser} onRouteChangeHome={this.routeChangeHome} onRouteChangeRegister={this.routeChangeRegister}/>
+        component = <Signin 
+                      loadUser={this.loadUser} 
+                      onRouteChangeHome={this.routeChangeHome} 
+                      onRouteChangeRegister={this.routeChangeRegister}
+                      serverEndpoint={serverEndpoint}/>
         break;
       case states.register:
-        component = <Register onRouteChangeHome={this.routeChangeHome} loadUser={this.loadUser}/>
+        component = <Register 
+                      onRouteChangeHome={this.routeChangeHome} 
+                      loadUser={this.loadUser}
+                      serverEndpoint={serverEndpoint}/>
         break;
     }
 

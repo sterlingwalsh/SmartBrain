@@ -9,6 +9,7 @@ class Signin extends Component{
             signInEmail: '',
             signInPassword: ''
         }
+        this.serverEndpoint = props.serverEndpoint;
     }
 
     onEmailChange = (evt) =>{
@@ -19,7 +20,7 @@ class Signin extends Component{
     }
 
     onSubmitSignin = () => {
-        fetch('http://localhost:3001/signin', {
+        fetch(`${this.serverEndpoint}/signin`, {
             method:'post',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({

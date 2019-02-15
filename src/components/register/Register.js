@@ -10,6 +10,7 @@ class Register extends Component{
             registerEmail: '',
             registerPassword: ''
         }
+        this.serverEndpoint = props.serverEndpoint;
     }
 
     onNameChange = (evt) => {
@@ -24,7 +25,7 @@ class Register extends Component{
     }
 
     onSubmitRegister = () => {
-        fetch('http://localhost:3001/register', {
+        fetch(`${this.serverEndpoint}/register`, {
             method:'post',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({

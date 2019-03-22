@@ -26,7 +26,7 @@ const states = {signin:["signin"], home:['home'], register:['register'], signout
 const initialState = {
   input: '',
   imageUrl:'',
-  box:{},
+  boxes:[],
   route:states.signin,
   isSignedIn:false,
   user:{
@@ -55,19 +55,27 @@ class App extends Component {
   }  
 
   calculateFaceLocations = (data) => {
-    const clarifaiface = data.outputs[0].data.regions[0].region_info.bounding_box;
+
     const image = document.getElementById('inputimage');
     const width = Number(image.width);
     const height = Number(image.height);
-    return{
-      leftCol: clarifaiface.left_col * width,
-      topRow: clarifaiface.top_row * height,
-      rightCol: width - (clarifaiface.right_col * width),
-      bottomRow: height - (clarifaiface.bottom_row * height),
-    }
+
+    const regions = data.outputs[0].data.regions.map(region => {
+      const clarifaiface = region.region_info.bounding_box;
+      return{
+        leftCol: clarifaiface.left_col * width,
+        topRow: clarifaiface.top_row * height,
+        rightCol: width - (clarifaiface.right_col * width),
+        bottomRow: height - (clarifaiface.bottom_row * height),
+      };
+    });
+
+    
+    // console.log("regions", regions);
+    return regions;
   }
 
-  displayFaceBox = (box) => this.setState({box:box});
+  displayFaceBox = (boxes) => this.setState({boxes});
 
   onInputChange = (evt) => this.setState({input:evt.target.value});
 
@@ -114,7 +122,7 @@ class App extends Component {
 
   render() {
       
-    const {route, box, imageUrl, isSignedIn} = this.state;
+    const {route, boxes, imageUrl, isSignedIn} = this.state;
     let component = null;
     // determine contents of page based on current state
     switch(route){
@@ -126,7 +134,7 @@ class App extends Component {
             onInputChange={this.onInputChange} 
             onImageSubmit={this.onImageSubmit}
           />
-          <FaceRecognition box={box} imageUrl={imageUrl}/>
+          <FaceRecognition boxes={boxes} imageUrl={imageUrl}/>
         </div>;
         break;
       case states.signin:

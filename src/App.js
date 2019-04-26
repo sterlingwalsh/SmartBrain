@@ -38,7 +38,8 @@ const initialState = {
   }
 };
 
-const serverEndpoint = 'https://calm-garden-99508.herokuapp.com';
+// const serverEndpoint = 'https://calm-garden-99508.herokuapp.com';
+const serverEndpoint = 'http://localhost:3000';
 
 class App extends Component {
   constructor(){
@@ -47,9 +48,9 @@ class App extends Component {
   }
 
   loadUser = (currentUser) =>{
-    const{id, name, email, entries, joined} = currentUser;
+    const{id, name, email, entries, joined, rank} = currentUser;
     this.setState({user:{
-      id, name, email, entries, joined
+      id, name, email, entries, joined, rank
     }});
     console.log("state", this.state);
   }  

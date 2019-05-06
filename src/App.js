@@ -35,11 +35,12 @@ const initialState = {
     email: '',
     entries: 0,
     joined: '',
+    rank: 0
   }
 };
 
-// const serverEndpoint = 'https://calm-garden-99508.herokuapp.com';
-const serverEndpoint = 'http://localhost:3000';
+const serverEndpoint = 'https://calm-garden-99508.herokuapp.com';
+// const serverEndpoint = 'http://localhost:3000';
 
 class App extends Component {
   constructor(){
@@ -97,8 +98,9 @@ class App extends Component {
             body: JSON.stringify({id: this.state.user.id}),
           })
           .then(response => response.json())
-          .then(entries => {
-              this.setState(Object.assign(this.state.user, {entries}));
+          .then(userUpdate => {
+              const {entries, rank} =  userUpdate;
+              this.setState(Object.assign(this.state.user, {entries, rank}));
           })
           .catch(console.log);
         }
@@ -138,19 +140,21 @@ class App extends Component {
           <FaceRecognition boxes={boxes} imageUrl={imageUrl}/>
         </div>;
         break;
-      case states.signin:
-        component = <Signin 
-                      loadUser={this.loadUser} 
-                      onRouteChangeHome={this.routeChangeHome} 
-                      onRouteChangeRegister={this.routeChangeRegister}
-                      serverEndpoint={serverEndpoint}/>
-        break;
+
       case states.register:
         component = <Register 
                       onRouteChangeHome={this.routeChangeHome} 
                       loadUser={this.loadUser}
                       serverEndpoint={serverEndpoint}/>
         break;
+      default:
+        component = <Signin 
+                      loadUser={this.loadUser} 
+                      onRouteChangeHome={this.routeChangeHome} 
+                      onRouteChangeRegister={this.routeChangeRegister}
+                      serverEndpoint={serverEndpoint}/>
+        break;
+      
     }
 
       return (
